@@ -1,0 +1,56 @@
+name: bibo-balance-agent-toolkit
+version: 1
+project: BIBO Balance
+
+entrypoint:
+  primary: .agent/AGENT.md
+  context: .agent/context/project-context.md
+  state:
+    - .agent/state/project-state.md
+    - .agent/state/open-decisions.md
+    - .agent/state/decision-log.md
+
+roles:
+  - agent-lead
+  - physics-engineer
+  - cuda-engineer
+  - rl-engineer
+  - local-renderer
+  - web-renderer
+  - qa-scientific-reviewer
+  - documentation-engineer
+
+subagents:
+  - geometry
+  - physics
+  - cuda
+  - rl
+  - rl-physics-informed
+  - local-viz
+  - web-viz
+  - qa
+  - docs
+  - integration
+
+workflows:
+  - feature
+  - bugfix
+  - physics-change
+  - cuda
+  - rl-experiment
+  - renderer
+  - docs
+  - release
+  - handoff
+
+validators:
+  - agent_check
+  - physics_sanity
+  - rl_sanity
+  - docs_markdown
+
+hard_gates:
+  - unresolved_mechanical_model
+  - cpu_reference_before_cuda
+  - deterministic_baseline_before_robust_rl
+  - common_state_contract_for_renderers

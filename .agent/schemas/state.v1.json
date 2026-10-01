@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BIBO Simulation State v1",
+  "type": "object",
+  "required": [
+    "version",
+    "time",
+    "dt",
+    "ball",
+    "platform",
+    "rods",
+    "gravity",
+    "energy",
+    "control"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "time": {
+      "type": "number"
+    },
+    "dt": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "ball": {
+      "type": "object",
+      "required": [
+        "position",
+        "velocity",
+        "contact"
+      ],
+      "properties": {
+        "position": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "velocity": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "contact": {
+          "type": "boolean"
+        }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "required": [
+        "position",
+        "quaternion",
+        "normal"
+      ],
+      "properties": {
+        "position": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "quaternion": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "normal": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3
+        }
+      }
+    },
+    "rods": {
+      "type": "object",
+      "required": [
+        "lengths",
+        "delta"
+      ],
+      "properties": {
+        "lengths": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "delta": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4
+        }
+      }
+    },
+    "gravity": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "energy": {
+      "type": "object",
+      "required": [
+        "total"
+      ],
+      "properties": {
+        "total": {
+          "type": "number"
+        }
+      }
+    },
+    "control": {
+      "type": "object",
+      "required": [
+        "action",
+        "reward"
+      ],
+      "properties": {
+        "action": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "reward": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

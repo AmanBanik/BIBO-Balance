@@ -1,0 +1,13 @@
+# Agent-local ephemeral files
+__pycache__/
+*.pyc
+*.log
+.tmp/
+scratch/
+artifacts/
+
+# Do not ignore the canonical state files:
+# project-state.md
+# decision-log.md
+# open-decisions.md
+# handoff-latest.md
