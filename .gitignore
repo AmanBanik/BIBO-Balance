@@ -1,1 +1,102 @@
+# ==========================================
+# BIBO Balance - Comprehensive .gitignore
+# ==========================================
+
+# 1. C / C++ / CMake / Build Artifacts
 build/
+bin/
+lib/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# 2. CUDA / GPU Caches
+*.ptx
+*.cubin
+*.fatbin
+.nv/
+
+# 3. Python / ML / TensorFlow
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ML / Data / Logs (Checkpoints & Runs)
+*.log
+*.ckpt
+*.pt
+*.pth
+*.h5
+*.pb
+*.tflite
+experiments/runs/*
+experiments/results/*
+!experiments/runs/.gitkeep
+!experiments/results/.gitkeep
+
+# 4. Web / Node.js / Three.js
+node_modules/
+jspm_packages/
+.npm/
+.yarn/
+dist/
+.parcel-cache/
+.next/
+out/
+
+# 5. OS / IDE / Editor files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
