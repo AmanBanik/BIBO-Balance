@@ -24,4 +24,7 @@ Vec3 calculate_contact_velocity(Vec3 ball_velocity, Vec3 ball_omega, float ball_
 float calculate_normal_force(float mass, Vec3 gravity, Vec3 plane_normal);
 Vec3 calculate_friction_force(float mass, float normal_force, float mu, Vec3 v_contact, Vec3 tangent_gravity);
 
+// Time Integration
+void integrate_ball_state(BallState* state, Vec3 force, Vec3 torque, float inertia, float dt);
+
 #endif // BIBO_PHYSICS_H

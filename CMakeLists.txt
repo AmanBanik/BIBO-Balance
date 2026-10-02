@@ -17,6 +17,7 @@ add_library(bibo_core STATIC
     src/physics/contact.c
     src/physics/friction.c
     src/physics/rolling.c
+    src/physics/integrator.c
 )
 
 # Unit Tests
@@ -40,3 +41,7 @@ add_test(NAME TestContact COMMAND test_contact)
 add_executable(test_friction tests/unit/test_friction.c)
 target_link_libraries(test_friction bibo_core m)
 add_test(NAME TestFriction COMMAND test_friction)
+
+add_executable(test_integrator tests/unit/test_integrator.c)
+target_link_libraries(test_integrator bibo_core m)
+add_test(NAME TestIntegrator COMMAND test_integrator)
