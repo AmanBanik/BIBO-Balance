@@ -10,11 +10,17 @@ include_directories(include)
 # Math/Geometry Core Library
 add_library(bibo_core STATIC
     src/core/vectors.c
+    src/core/quaternion.c
+    src/geometry/platform.c
+    src/geometry/rods.c
 )
 
 # Unit Tests
 enable_testing()
 add_executable(test_vectors tests/unit/test_vectors.c)
 target_link_libraries(test_vectors bibo_core m)
-
 add_test(NAME TestVectors COMMAND test_vectors)
+
+add_executable(test_geometry tests/unit/test_geometry.c)
+target_link_libraries(test_geometry bibo_core m)
+add_test(NAME TestGeometry COMMAND test_geometry)
