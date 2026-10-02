@@ -22,7 +22,7 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 - [x] Configure CMake and pass C-based geometry unit tests.
 
 ## 🟡 Phase 2: Ball Physics (Next Up)
-- [ ] Implement configurable 3D gravity decomposition ($g_{normal}$, $g_{parallel}$).
+- [x] Implement configurable 3D gravity decomposition ($g_{normal}$, $g_{parallel}$).
 - [ ] Implement rigid-body contact detection and resolution.
 - [ ] Implement rolling mechanics and friction (slip vs. grip thresholds).
 - [ ] Implement temporal time integration (RK4 or Euler).

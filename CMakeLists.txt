@@ -13,6 +13,7 @@ add_library(bibo_core STATIC
     src/core/quaternion.c
     src/geometry/platform.c
     src/geometry/rods.c
+    src/physics/gravity.c
 )
 
 # Unit Tests
@@ -24,3 +25,7 @@ add_test(NAME TestVectors COMMAND test_vectors)
 add_executable(test_geometry tests/unit/test_geometry.c)
 target_link_libraries(test_geometry bibo_core m)
 add_test(NAME TestGeometry COMMAND test_geometry)
+
+add_executable(test_physics tests/unit/test_physics.c)
+target_link_libraries(test_physics bibo_core m)
+add_test(NAME TestPhysics COMMAND test_physics)
