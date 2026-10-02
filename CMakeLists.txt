@@ -14,6 +14,7 @@ add_library(bibo_core STATIC
     src/geometry/platform.c
     src/geometry/rods.c
     src/physics/gravity.c
+    src/physics/contact.c
 )
 
 # Unit Tests
@@ -29,3 +30,7 @@ add_test(NAME TestGeometry COMMAND test_geometry)
 add_executable(test_physics tests/unit/test_physics.c)
 target_link_libraries(test_physics bibo_core m)
 add_test(NAME TestPhysics COMMAND test_physics)
+
+add_executable(test_contact tests/unit/test_contact.c)
+target_link_libraries(test_contact bibo_core m)
+add_test(NAME TestContact COMMAND test_contact)
