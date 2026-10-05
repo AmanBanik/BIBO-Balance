@@ -555,7 +555,7 @@ $$ -\Delta L_{\max} \le \Delta L_i \le \Delta L_{\max} $$
 
 Actuator state update:
 
-$$ L_i^{t+1} = \operatorname{clip} ( L_i^t+\Delta L_i, L_{i,\min}, L_{i,\max} ) $$
+$$ L_i^{t+1} = \mathrm{clip} ( L_i^t+\Delta L_i, L_{i,\min}, L_{i,\max} ) $$
 
 The actuator should also have a rate limit:
 
@@ -634,7 +634,7 @@ $$ \mathcal L_{\text{dynamics}} = \left\| m\mathbf a - (\mathbf F_g+\mathbf F_N+
 
 and actuator constraints can be enforced through:
 
-$$ \mathcal L_{\text{actuator}} = \sum_i \operatorname{ReLU}(L_i-L_{i,\max})^2 + \operatorname{ReLU}(L_{i,\min}-L_i)^2 $$
+$$ \mathcal L_{\text{actuator}} = \sum_i \mathrm{ReLU}(L_i-L_{i,\max})^2 + \mathrm{ReLU}(L_{i,\min}-L_i)^2 $$
 
 This would move BIBO toward the **physics-informed machine learning** family.
 
