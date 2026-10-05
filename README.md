@@ -26,7 +26,7 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 - [x] Implement rigid-body contact detection and resolution.
 - [x] Implement rolling mechanics and friction (slip vs. grip thresholds).
 - [x] Implement temporal time integration (RK4 or Euler).
-- [ ] Implement Energy (Kinetic/Potential) calculations.
+- [x] Implement Energy (Kinetic/Potential) calculations.
 - [ ] Implement stability detection window logic.
 
 ## ⚪ Phase 3: Actuator/Platform Dynamics

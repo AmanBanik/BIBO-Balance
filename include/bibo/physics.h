@@ -27,4 +27,9 @@ Vec3 calculate_friction_force(float mass, float normal_force, float mu, Vec3 v_c
 // Time Integration
 void integrate_ball_state(BallState* state, Vec3 force, Vec3 torque, float inertia, float dt);
 
+// Energy Calculations
+float calculate_kinetic_energy(BallState state, float inertia);
+float calculate_potential_energy(BallState state, Vec3 gravity);
+float calculate_total_energy(BallState state, float inertia, Vec3 gravity);
+
 #endif // BIBO_PHYSICS_H
