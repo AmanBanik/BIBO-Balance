@@ -13,6 +13,7 @@ add_library(bibo_core STATIC
     src/core/quaternion.c
     src/geometry/platform.c
     src/geometry/rods.c
+    src/geometry/kinematics.c
     src/physics/gravity.c
     src/physics/contact.c
     src/physics/friction.c
@@ -60,3 +61,7 @@ add_test(NAME TestStability COMMAND test_stability)
 add_executable(test_actuator tests/unit/test_actuator.c)
 target_link_libraries(test_actuator bibo_core m)
 add_test(NAME TestActuator COMMAND test_actuator)
+
+add_executable(test_kinematics tests/unit/test_kinematics.c)
+target_link_libraries(test_kinematics bibo_core m)
+add_test(NAME TestKinematics COMMAND test_kinematics)
