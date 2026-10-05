@@ -19,6 +19,7 @@ add_library(bibo_core STATIC
     src/physics/rolling.c
     src/physics/integrator.c
     src/physics/energy.c
+    src/physics/stability.c
 )
 
 # Unit Tests
@@ -50,3 +51,7 @@ add_test(NAME TestIntegrator COMMAND test_integrator)
 add_executable(test_energy tests/unit/test_energy.c)
 target_link_libraries(test_energy bibo_core m)
 add_test(NAME TestEnergy COMMAND test_energy)
+
+add_executable(test_stability tests/unit/test_stability.c)
+target_link_libraries(test_stability bibo_core m)
+add_test(NAME TestStability COMMAND test_stability)
