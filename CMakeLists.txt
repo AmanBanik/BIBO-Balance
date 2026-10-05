@@ -22,6 +22,7 @@ add_library(bibo_core STATIC
     src/physics/energy.c
     src/physics/stability.c
     src/physics/actuator.c
+    src/physics/platform_dynamics.c
 )
 
 # Unit Tests
@@ -65,3 +66,7 @@ add_test(NAME TestActuator COMMAND test_actuator)
 add_executable(test_kinematics tests/unit/test_kinematics.c)
 target_link_libraries(test_kinematics bibo_core m)
 add_test(NAME TestKinematics COMMAND test_kinematics)
+
+add_executable(test_platform_dynamics tests/unit/test_platform_dynamics.c)
+target_link_libraries(test_platform_dynamics bibo_core m)
+add_test(NAME TestPlatformDynamics COMMAND test_platform_dynamics)

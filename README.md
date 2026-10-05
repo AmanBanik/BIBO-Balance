@@ -29,10 +29,10 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 - [x] Implement Energy (Kinetic/Potential) calculations.
 - [x] Implement stability detection window logic.
 
-## 🟡 Phase 3: Actuator/Platform Dynamics (Next Up)
+## 🟢 Phase 3: Actuator/Platform Dynamics (Completed)
 - [x] Implement rod-length rate limiting and constraints.
 - [x] Translate $\Delta L$ commands into moving-platform velocity vectors.
-- [ ] Factor platform movement into contact forces.
+- [x] Factor platform movement into contact forces.
 
 ## ⚪ Phase 4: CPU Reference Simulator
 - [ ] Finalize deterministic fixed-step C simulator.

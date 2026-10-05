@@ -33,6 +33,7 @@ float calculate_potential_energy(BallState state, Vec3 gravity);
 float calculate_total_energy(BallState state, float inertia, Vec3 gravity);
 #include "bibo/geometry.h"
 #include "bibo/contact.h"
+#include "bibo/kinematics.h"
 
 // Stability Tracker
 typedef struct {
@@ -45,5 +46,9 @@ typedef struct {
 
 void stability_tracker_init(StabilityTracker* tracker, float req_time, float v_thresh, float omega_thresh);
 void stability_tracker_update(StabilityTracker* tracker, BallState state, Pose platform_pose, PlatformGeometry plat_geom, ContactInfo contact, float dt);
+
+// Platform Dynamics
+Vec3 calculate_platform_surface_velocity(PlatformState plat, Vec3 contact_point_world);
+Vec3 calculate_relative_contact_velocity(Vec3 ball_v_contact, Vec3 plat_v_contact);
 
 #endif // BIBO_PHYSICS_H
