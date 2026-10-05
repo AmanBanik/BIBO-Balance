@@ -39,15 +39,7 @@ BIBO Balance is a **closed-loop physical control system in simulation**.
 
 A rigid rectangular platform is supported by four independently controllable actuator rods. The controller does **not** directly command platform pitch, roll, yaw, or rod angles. The controller's actuator authority is:
 
-$$
-a_t =
-\begin{bmatrix}
-\Delta L_1 &
-\Delta L_2 &
-\Delta L_3 &
-\Delta L_4
-\end{bmatrix}
-$$
+$$ a_t = \begin{bmatrix} \Delta L_1 & \Delta L_2 & \Delta L_3 & \Delta L_4 \end{bmatrix} $$
 
 where $L_i$ is the current length/state of actuator $i$.
 
@@ -55,21 +47,7 @@ Changing those lengths changes the platform configuration. The platform configur
 
 The central loop is therefore:
 
-$$
-\boxed{
-\text{rod lengths}
-\rightarrow
-\text{platform pose}
-\rightarrow
-\text{ball dynamics}
-\rightarrow
-\text{observations}
-\rightarrow
-\text{neural policy}
-\rightarrow
-\text{rod-length changes}
-}
-$$
+$$ \boxed{ \text{rod lengths} \rightarrow \text{platform pose} \rightarrow \text{ball dynamics} \rightarrow \text{observations} \rightarrow \text{neural policy} \rightarrow \text{rod-length changes} } $$
 
 The final ball position is **not required to be a globally fixed coordinate**. A stable configuration is allowed to emerge from the coupled platform/ball dynamics and the controller's operating policy.
 
@@ -165,33 +143,23 @@ Let:
 
 The intended aspect ratio is:
 
-$$
-L_p = 3W_p
-$$
+$$ L_p = 3W_p $$
 
 The platform is a **rigid planar body**.
 
 A convenient local coordinate system is:
 
-$$
-u \in \left[-\frac{L_p}{2}, \frac{L_p}{2}\right]
-$$
+$$ u \in \left[-\frac{L_p}{2}, \frac{L_p}{2}\right] $$
 
-$$
-v \in \left[-\frac{W_p}{2}, \frac{W_p}{2}\right]
-$$
+$$ v \in \left[-\frac{W_p}{2}, \frac{W_p}{2}\right] $$
 
-$$
-w=0
-$$
+$$ w=0 $$
 
 for the platform surface.
 
 Its world pose can be represented as:
 
-$$
-\mathbf P_i = \mathbf t + R\mathbf C_i
-$$
+$$ \mathbf P_i = \mathbf t + R\mathbf C_i $$
 
 where:
 
@@ -211,25 +179,17 @@ The proposal specifies a rectangular platform whose length is approximately thre
 
 For each actuator:
 
-$$
-L_i = \text{instantaneous rod length}
-$$
+$$ L_i = \text{instantaneous rod length} $$
 
 The controller acts on:
 
-$$
-\Delta L_i
-$$
+$$ \Delta L_i $$
 
 rather than directly commanding rod angles.
 
 A normalized actuator state can also be defined as:
 
-$$
-\ell_i =
-\frac{L_i-L_{i,\text{mean}}}
-{L_{i,\text{scale}}}
-$$
+$$ \ell_i = \frac{L_i-L_{i,\text{mean}}} {L_{i,\text{scale}}} $$
 
 This matches the proposal's idea of giving the controller the instantaneous rod extension/retraction relative to a mean/reference.
 
@@ -237,19 +197,11 @@ This matches the proposal's idea of giving the controller the instantaneous rod 
 
 If the rod joins a fixed base anchor $\mathbf B_i$ to a moving platform corner $\mathbf P_i$, the geometric constraint is:
 
-$$
-\boxed{
-L_i = \|\mathbf P_i-\mathbf B_i\|
-}
-$$
+$$ \boxed{ L_i = \|\mathbf P_i-\mathbf B_i\| } $$
 
 or:
 
-$$
-\boxed{
-\|\mathbf t+R\mathbf C_i-\mathbf B_i\|^2-L_i^2=0
-}
-$$
+$$ \boxed{ \|\mathbf t+R\mathbf C_i-\mathbf B_i\|^2-L_i^2=0 } $$
 
 This equation should become the central mechanical constraint in the simulator.
 
@@ -297,17 +249,11 @@ Use explicit coordinate conventions throughout the entire repository.
 
 Recommended:
 
-$$
-+x = \text{platform length direction}
-$$
+$$ +x = \text{platform length direction} $$
 
-$$
-+y = \text{platform width direction}
-$$
+$$ +y = \text{platform width direction} $$
 
-$$
-+z = \text{world-up}
-$$
+$$ +z = \text{world-up} $$
 
 The initial/neutral platform should be aligned with the $xy$-plane.
 
@@ -315,29 +261,15 @@ The initial/neutral platform should be aligned with the $xy$-plane.
 
 For a user-configurable gravity direction in spherical coordinates:
 
-$$
-\boxed{
-\mathbf g =
-g
-\begin{bmatrix}
-\sin\phi\cos\theta\\
-\sin\phi\sin\theta\\
-\cos\phi
-\end{bmatrix}
-}
-$$
+$$ \boxed{ \mathbf g = g \begin{bmatrix} \sin\phi\cos\theta\\ \sin\phi\sin\theta\\ \cos\phi \end{bmatrix} } $$
 
 where:
 
-$$
-\theta\in[0,2\pi)
-$$
+$$ \theta\in[0,2\pi) $$
 
 and the proposal currently suggests an inclination range up to approximately:
 
-$$
-\phi\in[0^\circ,120^\circ].
-$$
+$$ \phi\in[0^\circ,120^\circ]. $$
 
 This range should remain configurable rather than hard-coded into the physics engine.
 
@@ -358,34 +290,17 @@ The platform plane and normal should be derived from its geometry.
 
 Given three non-collinear platform points:
 
-$$
-\mathbf P_1,\mathbf P_2,\mathbf P_3
-$$
+$$ \mathbf P_1,\mathbf P_2,\mathbf P_3 $$
 
 define:
 
-$$
-\mathbf e_1 =
-\frac{\mathbf P_2-\mathbf P_1}
-{\|\mathbf P_2-\mathbf P_1\|}
-$$
+$$ \mathbf e_1 = \frac{\mathbf P_2-\mathbf P_1} {\|\mathbf P_2-\mathbf P_1\|} $$
 
-$$
-\mathbf q =
-\mathbf P_3-\mathbf P_1
--
-(\mathbf P_3-\mathbf P_1)\cdot\mathbf e_1\,\mathbf e_1
-$$
+$$ \mathbf q = \mathbf P_3-\mathbf P_1 - (\mathbf P_3-\mathbf P_1)\cdot\mathbf e_1\,\mathbf e_1 $$
 
-$$
-\mathbf e_2=\frac{\mathbf q}{\|\mathbf q\|}
-$$
+$$ \mathbf e_2=\frac{\mathbf q}{\|\mathbf q\|} $$
 
-$$
-\boxed{
-\mathbf n=\mathbf e_1\times\mathbf e_2
-}
-$$
+$$ \boxed{ \mathbf n=\mathbf e_1\times\mathbf e_2 } $$
 
 This gives a numerically transparent platform frame.
 
@@ -409,10 +324,7 @@ Let:
 
 For a platform point $\mathbf P_0$ and unit normal $\mathbf n$:
 
-$$
-d =
-\mathbf n\cdot(\mathbf r-\mathbf P_0)-r_b
-$$
+$$ d = \mathbf n\cdot(\mathbf r-\mathbf P_0)-r_b $$
 
 Interpretation:
 
@@ -426,16 +338,9 @@ The engine must prevent physically meaningful penetration.
 
 Decompose gravity into normal and tangential components:
 
-$$
-\mathbf g_n=(\mathbf g\cdot\mathbf n)\mathbf n
-$$
+$$ \mathbf g_n=(\mathbf g\cdot\mathbf n)\mathbf n $$
 
-$$
-\boxed{
-\mathbf g_\parallel=
-\mathbf g-(\mathbf g\cdot\mathbf n)\mathbf n
-}
-$$
+$$ \boxed{ \mathbf g_\parallel= \mathbf g-(\mathbf g\cdot\mathbf n)\mathbf n } $$
 
 The tangential component is the primary driver of downhill rolling on a stationary planar surface.
 
@@ -443,9 +348,7 @@ The tangential component is the primary driver of downhill rolling on a stationa
 
 With $\mathbf n$ pointing away from the platform:
 
-$$
-N=\max(0,-m\,\mathbf g\cdot\mathbf n)
-$$
+$$ N=\max(0,-m\,\mathbf g\cdot\mathbf n) $$
 
 for the simplest quasi-static normal model.
 
@@ -455,17 +358,13 @@ A more complete implementation should include contact velocity and the effect of
 
 V1 can use a fixed friction coefficient:
 
-$$
-\mu=0.9
-$$
+$$ \mu=0.9 $$
 
 as proposed.
 
 V2 can expose:
 
-$$
-\mu\sim U(\mu_{\min},\mu_{\max})
-$$
+$$ \mu\sim U(\mu_{\min},\mu_{\max}) $$
 
 between episodes to improve policy robustness.
 
@@ -475,9 +374,7 @@ This does not fundamentally increase the cost of a physics step. The bigger comp
 
 For a solid sphere:
 
-$$
-I=\frac{2}{5}mr_b^2
-$$
+$$ I=\frac{2}{5}mr_b^2 $$
 
 The simulator can start with a reduced rolling model, then move toward a full rigid-body/contact model if the need is demonstrated.
 
@@ -491,32 +388,19 @@ The source explicitly proposes rolling along a physically obtained trajectory an
 
 Gravitational potential energy for an acceleration vector $\mathbf g$ is:
 
-$$
-\boxed{
-U=-m\mathbf g\cdot\mathbf r+C
-}
-$$
+$$ \boxed{ U=-m\mathbf g\cdot\mathbf r+C } $$
 
 Translational kinetic energy:
 
-$$
-K_t=\frac12m\|\mathbf v\|^2
-$$
+$$ K_t=\frac12m\|\mathbf v\|^2 $$
 
 Rotational kinetic energy:
 
-$$
-K_r=\frac12
-\boldsymbol\omega^T I\boldsymbol\omega
-$$
+$$ K_r=\frac12 \boldsymbol\omega^T I\boldsymbol\omega $$
 
 Total mechanical energy:
 
-$$
-\boxed{
-E=U+K_t+K_r
-}
-$$
+$$ \boxed{ E=U+K_t+K_r } $$
 
 ## Important interpretation
 
@@ -524,9 +408,7 @@ BIBO should track energy because it gives an interpretable measure of motion and
 
 However, do **not** impose the assumption:
 
-$$
-\frac{dE}{dt}\le0
-$$
+$$ \frac{dE}{dt}\le0 $$
 
 under all circumstances.
 
@@ -542,11 +424,7 @@ not as an unconditional law during active control.
 
 A useful diagnostic is actuator power:
 
-$$
-P_{\text{act}}
-=
-\frac{dW_{\text{act}}}{dt}
-$$
+$$ P_{\text{act}} = \frac{dW_{\text{act}}}{dt} $$
 
 which can explain why energy rises during an intentional correction.
 
@@ -566,23 +444,15 @@ Use a temporal stability condition.
 
 For example, over a window $T_s$:
 
-$$
-\|\mathbf v_\parallel(t)\| < \epsilon_v
-$$
+$$ \|\mathbf v_\parallel(t)\| < \epsilon_v $$
 
-$$
-\|\mathbf a_\parallel(t)\| < \epsilon_a
-$$
+$$ \|\mathbf a_\parallel(t)\| < \epsilon_a $$
 
-$$
-\text{contact}(t)=1
-$$
+$$ \text{contact}(t)=1 $$
 
 and optionally:
 
-$$
-|\dot E(t)| < \epsilon_E
-$$
+$$ |\dot E(t)| < \epsilon_E $$
 
 for the majority of the window.
 
@@ -677,41 +547,19 @@ The proposal names the two side/top views, ball elevation, rod-length phase valu
 
 Use a bounded continuous action:
 
-$$
-\boxed{
-\mathbf a_t =
-[\Delta L_1,\Delta L_2,\Delta L_3,\Delta L_4]
-}
-$$
+$$ \boxed{ \mathbf a_t = [\Delta L_1,\Delta L_2,\Delta L_3,\Delta L_4] } $$
 
 with:
 
-$$
--\Delta L_{\max}
-\le
-\Delta L_i
-\le
-\Delta L_{\max}
-$$
+$$ -\Delta L_{\max} \le \Delta L_i \le \Delta L_{\max} $$
 
 Actuator state update:
 
-$$
-L_i^{t+1}
-=
-\operatorname{clip}
-(
-L_i^t+\Delta L_i,
-L_{i,\min},
-L_{i,\max}
-)
-$$
+$$ L_i^{t+1} = \operatorname{clip} ( L_i^t+\Delta L_i, L_{i,\min}, L_{i,\max} ) $$
 
 The actuator should also have a rate limit:
 
-$$
-|\dot L_i|\le \dot L_{i,\max}
-$$
+$$ |\dot L_i|\le \dot L_{i,\max} $$
 
 and optionally acceleration/slew limits.
 
@@ -725,15 +573,7 @@ The first reward should be interpretable.
 
 A possible formulation is:
 
-$$
-R_t=
-w_sR_{\text{stability}}
--w_v\|\mathbf v_\parallel\|^2
--w_eR_{\text{energy}}
--w_a\|\mathbf a_t\|^2
--w_lR_{\text{limit}}
--w_fR_{\text{failure}}
-$$
+$$ R_t= w_sR_{\text{stability}} -w_v\|\mathbf v_\parallel\|^2 -w_eR_{\text{energy}} -w_a\|\mathbf a_t\|^2 -w_lR_{\text{limit}} -w_fR_{\text{failure}} $$
 
 ### Components
 
@@ -743,16 +583,11 @@ Reward low ball speed, low oscillation, maintained contact, and bounded platform
 
 **Velocity penalty**
 
-$$
-R_v=\|\mathbf v_\parallel\|^2
-$$
+$$ R_v=\|\mathbf v_\parallel\|^2 $$
 
 **Actuation penalty**
 
-$$
-R_a=
-\sum_i(\Delta L_i)^2
-$$
+$$ R_a= \sum_i(\Delta L_i)^2 $$
 
 This discourages violent actuator activity.
 
@@ -773,11 +608,7 @@ Large negative reward for:
 
 A major metric should be **recovery time**:
 
-$$
-T_{\text{recovery}}
-=
-t_{\text{stable}}-t_{\text{disturbance}}
-$$
+$$ T_{\text{recovery}} = t_{\text{stable}}-t_{\text{disturbance}} $$
 
 rather than merely "episode reward."
 
@@ -795,44 +626,15 @@ It can later be extended toward **physics-informed RL**.
 
 A possible composite training loss is:
 
-$$
-\boxed{
-\mathcal L
-=
-\mathcal L_{\text{RL}}
-+
-\lambda_d\mathcal L_{\text{dynamics}}
-+
-\lambda_c\mathcal L_{\text{contact}}
-+
-\lambda_a\mathcal L_{\text{actuator}}
-+
-\lambda_e\mathcal L_{\text{energy}}
-}
-$$
+$$ \boxed{ \mathcal L = \mathcal L_{\text{RL}} + \lambda_d\mathcal L_{\text{dynamics}} + \lambda_c\mathcal L_{\text{contact}} + \lambda_a\mathcal L_{\text{actuator}} + \lambda_e\mathcal L_{\text{energy}} } $$
 
 For example:
 
-$$
-\mathcal L_{\text{dynamics}}
-=
-\left\|
-m\mathbf a
--
-(\mathbf F_g+\mathbf F_N+\mathbf F_f)
-\right\|^2
-$$
+$$ \mathcal L_{\text{dynamics}} = \left\| m\mathbf a - (\mathbf F_g+\mathbf F_N+\mathbf F_f) \right\|^2 $$
 
 and actuator constraints can be enforced through:
 
-$$
-\mathcal L_{\text{actuator}}
-=
-\sum_i
-\operatorname{ReLU}(L_i-L_{i,\max})^2
-+
-\operatorname{ReLU}(L_{i,\min}-L_i)^2
-$$
+$$ \mathcal L_{\text{actuator}} = \sum_i \operatorname{ReLU}(L_i-L_{i,\max})^2 + \operatorname{ReLU}(L_{i,\min}-L_i)^2 $$
 
 This would move BIBO toward the **physics-informed machine learning** family.
 
@@ -852,12 +654,7 @@ The most valuable CUDA workload is not "one ball" by itself.
 
 The scalable target is:
 
-$$
-\boxed{
-N_{\text{parallel environments}}
-\gg 1
-}
-$$
+$$ \boxed{ N_{\text{parallel environments}} \gg 1 } $$
 
 During RL training, thousands or millions of simulation steps can be generated.
 
@@ -1203,9 +1000,7 @@ Random disturbances themselves are cheap.
 
 For example:
 
-$$
-\mathbf v \leftarrow \mathbf v+\Delta\mathbf v
-$$
+$$ \mathbf v \leftarrow \mathbf v+\Delta\mathbf v $$
 
 is only a few arithmetic operations.
 
@@ -1293,29 +1088,21 @@ Everything important can be created procedurally.
 
 Create a rectangular box/mesh from:
 
-$$
-L_p,\ W_p,\ thickness
-$$
+$$ L_p,\ W_p,\ thickness $$
 
 ## Ball
 
 Create a sphere from:
 
-$$
-r_b
-$$
+$$ r_b $$
 
 ## Rods
 
 For rod $i$:
 
-$$
-\mathbf d_i=\mathbf P_i-\mathbf B_i
-$$
+$$ \mathbf d_i=\mathbf P_i-\mathbf B_i $$
 
-$$
-L_i=\|\mathbf d_i\|
-$$
+$$ L_i=\|\mathbf d_i\| $$
 
 The renderer creates a cylinder aligned with $\mathbf d_i$.
 
@@ -1323,12 +1110,7 @@ The renderer creates a cylinder aligned with $\mathbf d_i$.
 
 Represent each vector as:
 
-$$
-\mathbf p_{\text{end}}
-=
-\mathbf p_{\text{start}}+
-s\mathbf v
-$$
+$$ \mathbf p_{\text{end}} = \mathbf p_{\text{start}}+ s\mathbf v $$
 
 where $s$ is a visualization scale.
 
@@ -1428,16 +1210,7 @@ The web interface should support several deployment modes.
 
 The browser receives recorded state:
 
-$$
-s_t =
-(
-\mathbf p,
-\mathbf v,
-R,
-L_1...L_4,
-\mathbf g
-)
-$$
+$$ s_t = ( \mathbf p, \mathbf v, R, L_1...L_4, \mathbf g ) $$
 
 and renders it.
 
@@ -1702,9 +1475,7 @@ Do not force these two workloads into one timing architecture.
 
 The physics engine should use a fixed simulation step:
 
-$$
-\Delta t_{\text{sim}}
-$$
+$$ \Delta t_{\text{sim}} $$
 
 The renderer should run independently.
 
@@ -2028,26 +1799,11 @@ The CPU implementation should remain the reference path.
 
 For a representative batch:
 
-$$
-\epsilon_{\max}
-=
-\max_i
-\left|
-x_i^{CPU}-x_i^{GPU}
-\right|
-$$
+$$ \epsilon_{\max} = \max_i \left| x_i^{CPU}-x_i^{GPU} \right| $$
 
 and RMS error:
 
-$$
-\epsilon_{RMS}
-=
-\sqrt{
-\frac{1}{N}
-\sum_i
-(x_i^{CPU}-x_i^{GPU})^2
-}
-$$
+$$ \epsilon_{RMS} = \sqrt{ \frac{1}{N} \sum_i (x_i^{CPU}-x_i^{GPU})^2 } $$
 
 The acceptable tolerance must be selected based on:
 
@@ -2084,9 +1840,7 @@ $$T_{\mathrm{physics\text{-}step}}$$
 
 ## Rendering
 
-$$
-FPS
-$$
+$$ FPS $$
 
 ## Control
 
@@ -2094,9 +1848,7 @@ $$T_{\mathrm{policy\ inference}}$$
 
 ## Stabilization
 
-$$
-T_{\text{recovery}}
-$$
+$$ T_{\text{recovery}} $$
 
 ## Quality
 
@@ -2379,17 +2131,13 @@ Controller stabilizes it.
 
 The gravity azimuth changes:
 
-$$
-\theta:0\rightarrow2\pi
-$$
+$$ \theta:0\rightarrow2\pi $$
 
 and the platform continually adapts.
 
 ## Scenario E — Friction variation
 
-$$
-\mu \in [\mu_{\min},\mu_{\max}]
-$$
+$$ \mu \in [\mu_{\min},\mu_{\max}] $$
 
 ## Scenario F — Disturbance
 
@@ -2397,9 +2145,7 @@ A small external impulse is applied.
 
 Measure:
 
-$$
-T_{\text{recovery}}
-$$
+$$ T_{\text{recovery}} $$
 
 These scenarios give the project a clear narrative rather than a single static "ball balancing" screenshot.
 
@@ -2622,21 +2368,11 @@ Only after this works should the RL agent take over the actuator commands.
 
 Use a reduced state vector:
 
-$$
-s_t=
-[
-x_b,y_b,z_b,
-v_x,v_y,v_z,
-L_1,L_2,L_3,L_4,
-g_x,g_y,g_z
-]
-$$
+$$ s_t= [ x_b,y_b,z_b, v_x,v_y,v_z, L_1,L_2,L_3,L_4, g_x,g_y,g_z ] $$
 
 and action:
 
-$$
-a_t=[\Delta L_1,\Delta L_2,\Delta L_3,\Delta L_4]
-$$
+$$ a_t=[\Delta L_1,\Delta L_2,\Delta L_3,\Delta L_4] $$
 
 This is not the final observation contract.
 
@@ -2961,17 +2697,7 @@ When an agent works on BIBO Balance:
 
 The agent should optimize for:
 
-$$
-\boxed{
-\text{physical correctness}
-\rightarrow
-\text{testability}
-\rightarrow
-\text{performance}
-\rightarrow
-\text{visual quality}
-}
-$$
+$$ \boxed{ \text{physical correctness} \rightarrow \text{testability} \rightarrow \text{performance} \rightarrow \text{visual quality} } $$
 
 not merely for making the demo look convincing.
 
