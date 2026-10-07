@@ -1,7 +1,7 @@
 #include "bibo/contact.h"
 #include <math.h>
 
-ContactInfo check_sphere_plane_contact(Vec3 ball_center, float ball_radius, Vec3 plane_point, Vec3 plane_normal, float epsilon) {
+BIBO_FUNC ContactInfo check_sphere_plane_contact(Vec3 ball_center, float ball_radius, Vec3 plane_point, Vec3 plane_normal, float epsilon) {
     ContactInfo info;
     info.normal = plane_normal;
 

@@ -1,7 +1,7 @@
 #include "bibo/simulator.h"
 #include <math.h>
 
-void simulator_init(BiboSimulator* sim) {
+BIBO_FUNC void simulator_init(BiboSimulator* sim) {
     // Standard platform bounds (60cm x 20cm -> 3:1 ratio)
     sim->platform_geom.length = 0.6f;
     sim->platform_geom.width = 0.2f;
@@ -29,7 +29,7 @@ void simulator_init(BiboSimulator* sim) {
     sim->time_elapsed = 0.0f;
 }
 
-void simulator_reset(BiboSimulator* sim, Vec3 start_pos) {
+BIBO_FUNC void simulator_reset(BiboSimulator* sim, Vec3 start_pos) {
     sim->ball.position = start_pos;
     sim->ball.velocity = (Vec3){0.0f, 0.0f, 0.0f};
     sim->ball.omega = (Vec3){0.0f, 0.0f, 0.0f};
@@ -49,7 +49,7 @@ void simulator_reset(BiboSimulator* sim, Vec3 start_pos) {
     sim->total_energy = calculate_total_energy(sim->ball, inertia, sim->gravity);
 }
 
-void simulator_step(BiboSimulator* sim, float commands[4], float dt) {
+BIBO_FUNC void simulator_step(BiboSimulator* sim, float commands[4], float dt) {
     if (dt <= 0.0f) return;
 
     // 1. Update Actuators (Hardware rate limiting is applied here)

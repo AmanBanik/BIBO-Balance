@@ -1,6 +1,8 @@
 #ifndef BIBO_TYPES_H
 #define BIBO_TYPES_H
 
+#include "bibo/cuda_utils.h"
+
 typedef struct {
     float x, y, z;
 } Vec3;

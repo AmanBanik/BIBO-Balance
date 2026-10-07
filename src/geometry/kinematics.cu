@@ -2,7 +2,7 @@
 #include "bibo/quaternion.h"
 #include <math.h>
 
-PlatformState calculate_platform_state(ActuatorState acts[4], PlatformGeometry geom) {
+BIBO_FUNC PlatformState calculate_platform_state(ActuatorState acts[4], PlatformGeometry geom) {
     PlatformState state;
     
     // Assumed corners:

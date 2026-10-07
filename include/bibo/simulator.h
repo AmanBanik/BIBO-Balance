@@ -1,6 +1,8 @@
 #ifndef BIBO_SIMULATOR_H
 #define BIBO_SIMULATOR_H
 
+#include "bibo/cuda_utils.h"
+
 #include "bibo/physics.h"
 #include "bibo/actuator.h"
 #include "bibo/kinematics.h"
@@ -26,12 +28,12 @@ typedef struct BiboSimulator {
 } BiboSimulator;
 
 // Initializes the simulator with default physical hardware parameters
-void simulator_init(BiboSimulator* sim);
+BIBO_FUNC void simulator_init(BiboSimulator* sim);
 
 // Resets the simulator (level platform, specific ball spawn position)
-void simulator_reset(BiboSimulator* sim, Vec3 start_pos);
+BIBO_FUNC void simulator_reset(BiboSimulator* sim, Vec3 start_pos);
 
 // Steps the entire simulation forward by 'dt' given 4 actuator commands
-void simulator_step(BiboSimulator* sim, float commands[4], float dt);
+BIBO_FUNC void simulator_step(BiboSimulator* sim, float commands[4], float dt);
 
 #endif // BIBO_SIMULATOR_H

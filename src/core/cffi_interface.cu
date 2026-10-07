@@ -2,7 +2,7 @@
 #include "bibo/simulator.h"
 #include <stdlib.h>
 
-BiboSimulator* bibo_env_create() {
+BIBO_FUNC BiboSimulator* bibo_env_create() {
     BiboSimulator* sim = (BiboSimulator*)malloc(sizeof(BiboSimulator));
     if (sim) {
         simulator_init(sim);
@@ -10,25 +10,25 @@ BiboSimulator* bibo_env_create() {
     return sim;
 }
 
-void bibo_env_destroy(BiboSimulator* env) {
+BIBO_FUNC void bibo_env_destroy(BiboSimulator* env) {
     if (env) {
         free(env);
     }
 }
 
-void bibo_env_reset(BiboSimulator* env, float spawn_x, float spawn_y, float spawn_z) {
+BIBO_FUNC void bibo_env_reset(BiboSimulator* env, float spawn_x, float spawn_y, float spawn_z) {
     if (!env) return;
     Vec3 spawn_pos = {spawn_x, spawn_y, spawn_z};
     simulator_reset(env, spawn_pos);
 }
 
-void bibo_env_step(BiboSimulator* env, float a0, float a1, float a2, float a3, float dt) {
+BIBO_FUNC void bibo_env_step(BiboSimulator* env, float a0, float a1, float a2, float a3, float dt) {
     if (!env) return;
     float commands[4] = {a0, a1, a2, a3};
     simulator_step(env, commands, dt);
 }
 
-void bibo_env_get_state(BiboSimulator* env, float* out_state) {
+BIBO_FUNC void bibo_env_get_state(BiboSimulator* env, float* out_state) {
     if (!env || !out_state) return;
 
     // Ball Position (3)
@@ -65,14 +65,14 @@ void bibo_env_get_state(BiboSimulator* env, float* out_state) {
     out_state[20] = env->actuators[3].length_rate;
 }
 
-int bibo_env_is_stable(BiboSimulator* env) {
+BIBO_FUNC int bibo_env_is_stable(BiboSimulator* env) {
     return env ? env->stability.is_stable : 0;
 }
 
-float bibo_env_get_energy(BiboSimulator* env) {
+BIBO_FUNC float bibo_env_get_energy(BiboSimulator* env) {
     return env ? env->total_energy : 0.0f;
 }
 
-int bibo_env_get_step_count(BiboSimulator* env) {
+BIBO_FUNC int bibo_env_get_step_count(BiboSimulator* env) {
     return env ? env->step_count : 0;
 }

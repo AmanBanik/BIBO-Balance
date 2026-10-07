@@ -1,7 +1,7 @@
 #include "bibo/physics.h"
 #include <math.h>
 
-float calculate_normal_force(float mass, Vec3 gravity, Vec3 plane_normal) {
+BIBO_FUNC float calculate_normal_force(float mass, Vec3 gravity, Vec3 plane_normal) {
     // Normal force magnitude: N = max(0, -m * (g . n))
     // Assuming quasi-static normal force (platform acceleration effects ignored for V1)
     float g_dot_n = vec3_dot(gravity, plane_normal);
@@ -12,7 +12,7 @@ float calculate_normal_force(float mass, Vec3 gravity, Vec3 plane_normal) {
     return n_mag;
 }
 
-Vec3 calculate_friction_force(float mass, float normal_force, float mu, Vec3 v_contact, Vec3 tangent_gravity) {
+BIBO_FUNC Vec3 calculate_friction_force(float mass, float normal_force, float mu, Vec3 v_contact, Vec3 tangent_gravity) {
     float max_static_friction = mu * normal_force;
     float v_mag = vec3_mag(v_contact);
     

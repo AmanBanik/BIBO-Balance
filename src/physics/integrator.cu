@@ -1,7 +1,7 @@
 #include "bibo/physics.h"
 
 // Semi-implicit Euler integration
-void integrate_ball_state(BallState* state, Vec3 force, Vec3 torque, float inertia, float dt) {
+BIBO_FUNC void integrate_ball_state(BallState* state, Vec3 force, Vec3 torque, float inertia, float dt) {
     // 1. Calculate translational and angular accelerations
     // a = F / m
     Vec3 accel = vec3_scale(force, 1.0f / state->mass);

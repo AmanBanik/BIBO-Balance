@@ -1,6 +1,8 @@
 #ifndef BIBO_CONTACT_H
 #define BIBO_CONTACT_H
 
+#include "bibo/cuda_utils.h"
+
 #include "bibo/types.h"
 #include "bibo/vectors.h"
 
@@ -21,7 +23,7 @@ typedef struct {
 
 // Plane Contact Detection
 // Evaluates d = n . (r - P_0) - r_b
-ContactInfo check_sphere_plane_contact(
+BIBO_FUNC ContactInfo check_sphere_plane_contact(
     Vec3 ball_center, 
     float ball_radius, 
     Vec3 plane_point, 

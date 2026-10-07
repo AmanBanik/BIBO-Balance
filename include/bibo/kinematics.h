@@ -1,6 +1,8 @@
 #ifndef BIBO_KINEMATICS_H
 #define BIBO_KINEMATICS_H
 
+#include "bibo/cuda_utils.h"
+
 #include "bibo/types.h"
 #include "bibo/geometry.h"
 
@@ -13,6 +15,6 @@ typedef struct {
 
 // Translates 4 individual actuator lengths and speeds into the 
 // holistic position, orientation, and velocity of the platform.
-PlatformState calculate_platform_state(ActuatorState acts[4], PlatformGeometry geom);
+BIBO_FUNC PlatformState calculate_platform_state(ActuatorState acts[4], PlatformGeometry geom);
 
 #endif // BIBO_KINEMATICS_H

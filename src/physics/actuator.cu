@@ -1,6 +1,6 @@
 #include "bibo/actuator.h"
 
-void actuator_apply_command(ActuatorState* act, float command_delta_L, float dt) {
+BIBO_FUNC void actuator_apply_command(ActuatorState* act, float command_delta_L, float dt) {
     if (dt <= 0.0f) {
         act->length_rate = 0.0f;
         return;
@@ -31,7 +31,7 @@ void actuator_apply_command(ActuatorState* act, float command_delta_L, float dt)
     act->length = new_length;
 }
 
-void actuator_reset(ActuatorState* act, float target_length) {
+BIBO_FUNC void actuator_reset(ActuatorState* act, float target_length) {
     if (target_length > act->length_max) {
         act->length = act->length_max;
     } else if (target_length < act->length_min) {

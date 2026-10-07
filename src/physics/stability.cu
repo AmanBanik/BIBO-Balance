@@ -1,7 +1,7 @@
 #include "bibo/physics.h"
 #include <math.h>
 
-void stability_tracker_init(StabilityTracker* tracker, float req_time, float v_thresh, float omega_thresh) {
+BIBO_FUNC void stability_tracker_init(StabilityTracker* tracker, float req_time, float v_thresh, float omega_thresh) {
     tracker->stable_time = 0.0f;
     tracker->threshold_v = v_thresh;
     tracker->threshold_omega = omega_thresh;
@@ -9,7 +9,7 @@ void stability_tracker_init(StabilityTracker* tracker, float req_time, float v_t
     tracker->is_stable = 0;
 }
 
-void stability_tracker_update(StabilityTracker* tracker, BallState state, Pose platform_pose, PlatformGeometry plat_geom, ContactInfo contact, float dt) {
+BIBO_FUNC void stability_tracker_update(StabilityTracker* tracker, BallState state, Pose platform_pose, PlatformGeometry plat_geom, ContactInfo contact, float dt) {
     // 1. Must be in continuous contact
     if (contact.state == CONTACT_SEPARATED) {
         tracker->stable_time = 0.0f;

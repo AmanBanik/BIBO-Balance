@@ -1,6 +1,6 @@
 #include "bibo/physics.h"
 
-float calculate_kinetic_energy(BallState state, float inertia) {
+BIBO_FUNC float calculate_kinetic_energy(BallState state, float inertia) {
     float v_sq = vec3_dot(state.velocity, state.velocity);
     float omega_sq = vec3_dot(state.omega, state.omega);
     
@@ -16,13 +16,13 @@ float calculate_kinetic_energy(BallState state, float inertia) {
     return ke_trans + ke_rot;
 }
 
-float calculate_potential_energy(BallState state, Vec3 gravity) {
+BIBO_FUNC float calculate_potential_energy(BallState state, Vec3 gravity) {
     // General potential energy formula: PE = -m * (g . p)
     // If g is [0, 0, -9.81], then g . p = -9.81 * z.
     // Therefore PE = -m * (-9.81 * z) = m * 9.81 * z, exactly matching standard mgh.
     return -state.mass * vec3_dot(gravity, state.position);
 }
 
-float calculate_total_energy(BallState state, float inertia, Vec3 gravity) {
+BIBO_FUNC float calculate_total_energy(BallState state, float inertia, Vec3 gravity) {
     return calculate_kinetic_energy(state, inertia) + calculate_potential_energy(state, gravity);
 }
