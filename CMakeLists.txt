@@ -14,6 +14,7 @@ set(CORE_SRCS
     src/core/quaternion.cu
     src/core/simulator.cu
     src/core/cffi_interface.cu
+    src/core/batched_simulator.cu
     src/geometry/platform.cu
     src/geometry/rods.cu
     src/geometry/kinematics.cu
@@ -88,3 +89,7 @@ add_test(NAME TestSimulator COMMAND test_simulator)
 add_executable(test_cffi_interface tests/unit/test_cffi_interface.cu)
 target_link_libraries(test_cffi_interface bibo_core m)
 add_test(NAME TestCffiInterface COMMAND test_cffi_interface)
+
+add_executable(test_batched_memory tests/unit/test_batched_memory.cu)
+target_link_libraries(test_batched_memory bibo_core m)
+add_test(NAME TestBatchedMemory COMMAND test_batched_memory)
