@@ -39,10 +39,11 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 - [x] Expose C ABI for external state access.
 - [x] Create deterministic replay test suite and benchmark throughput.
 
-## ⚪ Phase 5: CUDA Batch Simulator
-- [ ] Port geometry and physics kernels to CUDA.
-- [ ] Process parallel batched environments.
-- [ ] Verify strict CPU vs. GPU numerical parity.
+## 🟡 Phase 5: CUDA Batch Simulator (In Progress)
+- [x] Port geometry and physics kernels to CUDA (Split 1).
+- [x] Implement VRAM Allocation for batched state arrays (Split 2).
+- [ ] Write global step kernel (Split 3).
+- [ ] Expose batched step to Python & Benchmark (Split 4).
 
 ## ⚪ Phase 6: RL V0 (Baseline Controller)
 - [ ] Bridge C simulator to Python (via `ctypes` or similar).
