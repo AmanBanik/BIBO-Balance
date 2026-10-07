@@ -41,14 +41,27 @@ def run_benchmark(steps=1_000_000):
     duration = end_time - start_time
     sps = steps / duration
     
-    print("\n" + "=" * 40)
-    print("🚀 BENCHMARK RESULTS 🚀")
-    print("=" * 40)
-    print(f"Total Steps:   {steps:,}")
-    print(f"Total Time:    {duration:.4f} seconds")
-    print(f"Total Resets:  {resets:,}")
-    print(f"Throughput:    {sps:,.2f} Steps/Second")
-    print("=" * 40 + "\n")
+    output = f"""
+========================================
+🚀 BENCHMARK RESULTS 🚀
+========================================
+Total Steps:   {steps:,}
+Total Time:    {duration:.4f} seconds
+Total Resets:  {resets:,}
+Throughput:    {sps:,.2f} Steps/Second
+========================================
+"""
+    print(output)
+    
+    # Save log to file
+    log_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../logs'))
+    os.makedirs(log_dir, exist_ok=True)
+    log_file = os.path.join(log_dir, "benchmark_cpu_1M.txt")
+    
+    with open(log_file, "w") as f:
+        f.write(output)
+        
+    print(f"Results saved to {log_file}")
     
     return sps
 
