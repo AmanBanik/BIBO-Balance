@@ -11,6 +11,7 @@ include_directories(include)
 add_library(bibo_core STATIC
     src/core/vectors.c
     src/core/quaternion.c
+    src/core/simulator.c
     src/geometry/platform.c
     src/geometry/rods.c
     src/geometry/kinematics.c
@@ -70,3 +71,7 @@ add_test(NAME TestKinematics COMMAND test_kinematics)
 add_executable(test_platform_dynamics tests/unit/test_platform_dynamics.c)
 target_link_libraries(test_platform_dynamics bibo_core m)
 add_test(NAME TestPlatformDynamics COMMAND test_platform_dynamics)
+
+add_executable(test_simulator tests/unit/test_simulator.c)
+target_link_libraries(test_simulator bibo_core m)
+add_test(NAME TestSimulator COMMAND test_simulator)
