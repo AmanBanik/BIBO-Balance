@@ -7,7 +7,7 @@
 
 // The monolithic state of the entire simulation environment.
 // This is exactly what the Python CFFI wrapper will interact with.
-typedef struct {
+typedef struct BiboSimulator {
     // Core Entities
     BallState ball;
     ActuatorState actuators[4];

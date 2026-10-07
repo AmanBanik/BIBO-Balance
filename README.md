@@ -36,7 +36,7 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 
 ## 🟡 Phase 4: CPU Reference Simulator (Next Up)
 - [x] Finalize deterministic fixed-step C simulator.
-- [ ] Expose C ABI for external state access.
+- [x] Expose C ABI for external state access.
 - [ ] Create deterministic replay test suite.
 
 ## ⚪ Phase 5: CUDA Batch Simulator

@@ -7,11 +7,11 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # Core include directory
 include_directories(include)
 
-# Math/Geometry Core Library
-add_library(bibo_core STATIC
+set(CORE_SRCS
     src/core/vectors.c
     src/core/quaternion.c
     src/core/simulator.c
+    src/core/cffi_interface.c
     src/geometry/platform.c
     src/geometry/rods.c
     src/geometry/kinematics.c
@@ -25,6 +25,13 @@ add_library(bibo_core STATIC
     src/physics/actuator.c
     src/physics/platform_dynamics.c
 )
+
+# Math/Geometry Core Library
+add_library(bibo_core STATIC ${CORE_SRCS})
+add_library(bibo_cffi SHARED ${CORE_SRCS})
+
+# Make sure shared library has position independent code
+set_target_properties(bibo_cffi PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Unit Tests
 enable_testing()
@@ -75,3 +82,7 @@ add_test(NAME TestPlatformDynamics COMMAND test_platform_dynamics)
 add_executable(test_simulator tests/unit/test_simulator.c)
 target_link_libraries(test_simulator bibo_core m)
 add_test(NAME TestSimulator COMMAND test_simulator)
+
+add_executable(test_cffi_interface tests/unit/test_cffi_interface.c)
+target_link_libraries(test_cffi_interface bibo_core m)
+add_test(NAME TestCffiInterface COMMAND test_cffi_interface)
