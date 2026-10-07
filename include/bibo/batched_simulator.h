@@ -26,6 +26,10 @@ int*   bibo_batched_get_dones_ptr(BatchedSimulatorContext* ctx);
 void bibo_batched_sync_actions_to_device(BatchedSimulatorContext* ctx);
 void bibo_batched_sync_results_to_host(BatchedSimulatorContext* ctx);
 
+// GPU Execution Kernels
+void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx);
+void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt);
+
 #ifdef __cplusplus
 }
 #endif

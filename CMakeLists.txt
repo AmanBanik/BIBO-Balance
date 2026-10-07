@@ -5,6 +5,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_CUDA_STANDARD 11)
 set(CMAKE_CUDA_STANDARD_REQUIRED True)
+set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
 # Core include directory
 include_directories(include)
