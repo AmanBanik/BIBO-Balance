@@ -34,10 +34,10 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 - [x] Translate $\Delta L$ commands into moving-platform velocity vectors.
 - [x] Factor platform movement into contact forces.
 
-## 🟡 Phase 4: CPU Reference Simulator (Next Up)
+## 🟢 Phase 4: CPU Reference Simulator (Completed)
 - [x] Finalize deterministic fixed-step C simulator.
 - [x] Expose C ABI for external state access.
-- [ ] Create deterministic replay test suite.
+- [x] Create deterministic replay test suite and benchmark throughput.
 
 ## ⚪ Phase 5: CUDA Batch Simulator
 - [ ] Port geometry and physics kernels to CUDA.
