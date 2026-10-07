@@ -1,0 +1,6 @@
+--- GPU Benchmark Results ---
+Environments: 100000
+Steps per Env: 1000
+Total Samples: 100000000
+Time Elapsed: 1.559 seconds
+Throughput: 64,141,513 Samples Per Second (SPS)
