@@ -98,3 +98,87 @@ class PPOMemory:
         
     def clear(self):
         self.step = 0
+
+class PPOAgent:
+    def __init__(self, state_dim=21, action_dim=4, lr=3e-4, clip_ratio=0.2, gamma=0.99, lam=0.95):
+        self.actor = PPOActor(action_dim)
+        self.critic = PPOCritic()
+        
+        # Build models by passing dummy state
+        dummy_state = tf.zeros((1, state_dim))
+        self.actor(dummy_state)
+        self.critic(dummy_state)
+        
+        self.actor_optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+        self.critic_optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
+        
+        self.clip_ratio = clip_ratio
+        self.gamma = gamma
+        self.lam = lam
+        
+    @tf.function
+    def get_action_and_value(self, state):
+        mean, log_std = self.actor(state)
+        value = self.critic(state)
+        
+        std = tf.exp(log_std)
+        
+        # Sample action from normal distribution
+        noise = tf.random.normal(tf.shape(mean))
+        action = mean + noise * std
+        
+        # Calculate log probability of the sampled action
+        # log_prob = -0.5 * ((action - mean) / std)^2 - 0.5 * ln(2 * pi) - log_std
+        log_prob = -0.5 * tf.square((action - mean) / std) - 0.5 * tf.math.log(2.0 * np.pi) - log_std
+        log_prob = tf.reduce_sum(log_prob, axis=-1)
+        
+        return action, value, log_prob
+
+    @tf.function
+    def train_step(self, states, actions, log_probs_old, returns, advantages):
+        # Normalize advantages
+        advantages = (advantages - tf.reduce_mean(advantages)) / (tf.math.reduce_std(advantages) + 1e-8)
+        
+        with tf.GradientTape() as actor_tape, tf.GradientTape() as critic_tape:
+            # Forward pass
+            mean, log_std = self.actor(states)
+            values = tf.squeeze(self.critic(states))
+            
+            std = tf.exp(log_std)
+            
+            # Recalculate log probabilities of the old actions with the new network weights
+            log_probs = -0.5 * tf.square((actions - mean) / std) - 0.5 * tf.math.log(2.0 * np.pi) - log_std
+            log_probs = tf.reduce_sum(log_probs, axis=-1)
+            
+            # PPO Ratio: pi_theta / pi_theta_old
+            ratio = tf.exp(log_probs - log_probs_old)
+            
+            # Clipped Surrogate Objective
+            surr1 = ratio * advantages
+            surr2 = tf.clip_by_value(ratio, 1.0 - self.clip_ratio, 1.0 + self.clip_ratio) * advantages
+            
+            # Entropy bonus (encourages exploration)
+            entropy = tf.reduce_sum(log_std + 0.5 * tf.math.log(2.0 * np.pi * np.e), axis=-1)
+            
+            # Negative because we want to maximize the objective using gradient descent
+            actor_loss = -tf.reduce_mean(tf.minimum(surr1, surr2)) - 0.01 * tf.reduce_mean(entropy)
+            
+            # Critic loss (Mean Squared Error between predicted values and actual returns)
+            critic_loss = tf.reduce_mean(tf.square(returns - values))
+            
+        # Compute and apply gradients
+        actor_grads = actor_tape.gradient(actor_loss, self.actor.trainable_variables)
+        critic_grads = critic_tape.gradient(critic_loss, self.critic.trainable_variables)
+        
+        self.actor_optimizer.apply_gradients(zip(actor_grads, self.actor.trainable_variables))
+        self.critic_optimizer.apply_gradients(zip(critic_grads, self.critic.trainable_variables))
+        
+        return actor_loss, critic_loss
+
+    def save_weights(self, path="models/ppo"):
+        self.actor.save_weights(f"{path}_actor.weights.h5")
+        self.critic.save_weights(f"{path}_critic.weights.h5")
+        
+    def load_weights(self, path="models/ppo"):
+        self.actor.load_weights(f"{path}_actor.weights.h5")
+        self.critic.load_weights(f"{path}_critic.weights.h5")

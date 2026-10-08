@@ -45,13 +45,13 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 - [x] Write global step kernel.
 - [x] Expose batched step to Python & Benchmark.
 
-## 🟡 Phase 6: RL V0 (Baseline Controller) (In Progress)
+## 🟢 Phase 6: RL V0 (Baseline Controller) (Completed)
 - [x] Scaffold Actor-Critic neural networks in TensorFlow.
 - [x] Implement PPO rollout buffers and advantage estimation.
-- [ ] Write the PPO optimization step and training loops.
-- [ ] Train continuous action agent and save weights.
+- [x] Write the PPO optimization step and training loops.
+- [x] Train continuous action agent and save weights.
 
-## ⚪ Phase 7: Robust RL
+## 🟡 Phase 7: Robust RL (In Progress)
 - [ ] Introduce randomized initial drops.
 - [ ] Introduce randomized gravity vectors and friction.
 - [ ] Train over disturbance curriculum.
