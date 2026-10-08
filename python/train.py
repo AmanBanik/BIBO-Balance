@@ -44,12 +44,18 @@ def train():
         if epoch < 10:
             spawn_radius_x = 0.05
             spawn_radius_y = 0.02
+            gravity_tilt = 0.0
+            friction_range = 0.0
         elif epoch < 30:
             spawn_radius_x = 0.15
             spawn_radius_y = 0.05
+            gravity_tilt = 0.5 # +/- 0.5 m/s^2 lateral gravity
+            friction_range = 0.02 # 0.08 to 0.12
         else:
             spawn_radius_x = 0.25 # Almost to the edge of 0.3
             spawn_radius_y = 0.08 # Almost to the edge of 0.1
+            gravity_tilt = 1.5 # Significant lateral tilt
+            friction_range = 0.05 # 0.05 to 0.15
             
         # ==========================================
         # 1. ROLLOUT COLLECTION (Simulation)
@@ -72,7 +78,12 @@ def train():
             env.actions_view[:] = scaled_actions
             
             # Step the batched GPU simulator (this triggers 100k CUDA threads)
-            next_states, rewards, dones = env.step(spawn_radius_x=spawn_radius_x, spawn_radius_y=spawn_radius_y)
+            next_states, rewards, dones = env.step(
+                spawn_radius_x=spawn_radius_x, 
+                spawn_radius_y=spawn_radius_y,
+                gravity_tilt=gravity_tilt,
+                friction_range=friction_range
+            )
             
             # Store transition in memory buffer
             memory.store(states, actions_np, rewards, values_np, log_probs_np, dones)

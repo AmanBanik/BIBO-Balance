@@ -30,8 +30,8 @@ void bibo_batched_sync_seeds_to_device(BatchedSimulatorContext* ctx);
 void bibo_batched_sync_results_to_host(BatchedSimulatorContext* ctx);
 
 // GPU Execution Kernels
-void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y);
-void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y);
+void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y, float gravity_tilt, float friction_range);
+void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y, float gravity_tilt, float friction_range);
 
 #ifdef __cplusplus
 }

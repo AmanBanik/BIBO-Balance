@@ -118,7 +118,9 @@ __global__ void batched_env_reset_kernel(
     int* d_dones,
     unsigned int* d_seeds,
     float spawn_radius_x,
-    float spawn_radius_y
+    float spawn_radius_y,
+    float gravity_tilt,
+    float friction_range
 ) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx >= num_envs) return;
@@ -130,7 +132,19 @@ __global__ void batched_env_reset_kernel(
     unsigned int seed = d_seeds[idx];
     float rx = rand_uniform(&seed, -spawn_radius_x, spawn_radius_x);
     float ry = rand_uniform(&seed, -spawn_radius_y, spawn_radius_y);
+    
+    // Domain Randomization: Gravity & Friction
+    float gx = rand_uniform(&seed, -gravity_tilt, gravity_tilt);
+    float gy = rand_uniform(&seed, -gravity_tilt, gravity_tilt);
+    float mu = rand_uniform(&seed, 0.1f - friction_range, 0.1f + friction_range); // base is typically 0.1
+    if (mu < 0.01f) mu = 0.01f; // Clamp to avoid slippery zero
+    
     d_seeds[idx] = seed;
+
+    // Apply randomization
+    d_sims[idx].gravity.x = gx;
+    d_sims[idx].gravity.y = gy;
+    d_sims[idx].friction_mu = mu;
 
     // Spawn roughly at center for now, with slight Z drop
     Vec3 spawn = {rx, ry, 0.15f};
@@ -153,7 +167,9 @@ __global__ void batched_env_step_kernel(
     unsigned int* d_seeds,
     float dt,
     float spawn_radius_x,
-    float spawn_radius_y
+    float spawn_radius_y,
+    float gravity_tilt,
+    float friction_range
 ) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx >= num_envs) return;
@@ -164,7 +180,17 @@ __global__ void batched_env_step_kernel(
         unsigned int seed = d_seeds[idx];
         float rx = rand_uniform(&seed, -spawn_radius_x, spawn_radius_x);
         float ry = rand_uniform(&seed, -spawn_radius_y, spawn_radius_y);
+        
+        float gx = rand_uniform(&seed, -gravity_tilt, gravity_tilt);
+        float gy = rand_uniform(&seed, -gravity_tilt, gravity_tilt);
+        float mu = rand_uniform(&seed, 0.1f - friction_range, 0.1f + friction_range);
+        if (mu < 0.01f) mu = 0.01f;
+        
         d_seeds[idx] = seed;
+
+        d_sims[idx].gravity.x = gx;
+        d_sims[idx].gravity.y = gy;
+        d_sims[idx].friction_mu = mu;
 
         Vec3 spawn = {rx, ry, 0.15f};
         simulator_reset(&d_sims[idx], spawn);
@@ -199,7 +225,7 @@ __global__ void batched_env_step_kernel(
     }
 }
 
-extern "C" void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y) {
+extern "C" void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y, float gravity_tilt, float friction_range) {
     if (!ctx) return;
     
     int threads = 256;
@@ -213,12 +239,14 @@ extern "C" void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float 
         ctx->d_dones,
         ctx->d_seeds,
         spawn_radius_x,
-        spawn_radius_y
+        spawn_radius_y,
+        gravity_tilt,
+        friction_range
     );
     CUDA_CHECK(cudaDeviceSynchronize());
 }
 
-extern "C" void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y) {
+extern "C" void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y, float gravity_tilt, float friction_range) {
     if (!ctx) return;
 
     int threads = 256;
@@ -234,7 +262,9 @@ extern "C" void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float d
         ctx->d_seeds,
         dt,
         spawn_radius_x,
-        spawn_radius_y
+        spawn_radius_y,
+        gravity_tilt,
+        friction_range
     );
     CUDA_CHECK(cudaDeviceSynchronize());
 }

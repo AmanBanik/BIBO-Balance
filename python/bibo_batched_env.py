@@ -27,8 +27,8 @@ class BiboBatchedEnv:
             void bibo_batched_sync_seeds_to_device(BatchedSimulatorContext* ctx);
             void bibo_batched_sync_results_to_host(BatchedSimulatorContext* ctx);
             
-            void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y);
-            void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y);
+            void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y, float gravity_tilt, float friction_range);
+            void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y, float gravity_tilt, float friction_range);
         """)
         
         ext = ".dylib" if platform.system() == "Darwin" else ".so"
@@ -67,18 +67,18 @@ class BiboBatchedEnv:
         if hasattr(self, 'lib') and hasattr(self, 'ctx') and self.ctx:
             self.lib.bibo_batched_env_destroy(self.ctx)
 
-    def reset(self, spawn_radius_x=0.0, spawn_radius_y=0.0):
-        self.lib.bibo_batched_env_reset_cuda(self.ctx, spawn_radius_x, spawn_radius_y)
+    def reset(self, spawn_radius_x=0.0, spawn_radius_y=0.0, gravity_tilt=0.0, friction_range=0.0):
+        self.lib.bibo_batched_env_reset_cuda(self.ctx, spawn_radius_x, spawn_radius_y, gravity_tilt, friction_range)
         self.lib.bibo_batched_sync_results_to_host(self.ctx)
         return self.states_view
         
-    def step(self, spawn_radius_x=0.0, spawn_radius_y=0.0):
+    def step(self, spawn_radius_x=0.0, spawn_radius_y=0.0, gravity_tilt=0.0, friction_range=0.0):
         # We assume the user has directly written to self.actions_view
         # 1. Sync actions Host -> Device
         self.lib.bibo_batched_sync_actions_to_device(self.ctx)
         
         # 2. Run CUDA Kernel
-        self.lib.bibo_batched_env_step_cuda(self.ctx, self.dt, spawn_radius_x, spawn_radius_y)
+        self.lib.bibo_batched_env_step_cuda(self.ctx, self.dt, spawn_radius_x, spawn_radius_y, gravity_tilt, friction_range)
         
         # 3. Sync Results Device -> Host
         self.lib.bibo_batched_sync_results_to_host(self.ctx)
