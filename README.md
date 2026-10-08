@@ -47,7 +47,7 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 
 ## 🟡 Phase 6: RL V0 (Baseline Controller) (In Progress)
 - [x] Scaffold Actor-Critic neural networks in TensorFlow.
-- [ ] Implement PPO rollout buffers and advantage estimation.
+- [x] Implement PPO rollout buffers and advantage estimation.
 - [ ] Write the PPO optimization step and training loops.
 - [ ] Train continuous action agent and save weights.
 
