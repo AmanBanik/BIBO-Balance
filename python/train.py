@@ -39,6 +39,19 @@ def train():
         start_time = time.time()
         
         # ==========================================
+        # Curriculum Domain Randomization
+        # ==========================================
+        if epoch < 10:
+            spawn_radius_x = 0.05
+            spawn_radius_y = 0.02
+        elif epoch < 30:
+            spawn_radius_x = 0.15
+            spawn_radius_y = 0.05
+        else:
+            spawn_radius_x = 0.25 # Almost to the edge of 0.3
+            spawn_radius_y = 0.08 # Almost to the edge of 0.1
+            
+        # ==========================================
         # 1. ROLLOUT COLLECTION (Simulation)
         # ==========================================
         for step in range(rollout_steps):
@@ -59,7 +72,7 @@ def train():
             env.actions_view[:] = scaled_actions
             
             # Step the batched GPU simulator (this triggers 100k CUDA threads)
-            next_states, rewards, dones = env.step()
+            next_states, rewards, dones = env.step(spawn_radius_x=spawn_radius_x, spawn_radius_y=spawn_radius_y)
             
             # Store transition in memory buffer
             memory.store(states, actions_np, rewards, values_np, log_probs_np, dones)

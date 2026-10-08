@@ -14,12 +14,14 @@ struct BatchedSimulatorContext {
     float* d_states;
     float* d_rewards;
     int* d_dones;
+    unsigned int* d_seeds;
 
     // Host Pointers (Pinned RAM)
     float* h_actions;
     float* h_states;
     float* h_rewards;
     int* h_dones;
+    unsigned int* h_seeds;
 };
 
 // Macro to wrap CUDA API calls and instantly crash on memory errors (Out of Memory, etc.)
@@ -44,14 +46,14 @@ BatchedSimulatorContext* bibo_batched_env_create(int num_envs) {
     CUDA_CHECK(cudaMalloc(&ctx->d_states, num_envs * 21 * sizeof(float)));
     CUDA_CHECK(cudaMalloc(&ctx->d_rewards, num_envs * sizeof(float)));
     CUDA_CHECK(cudaMalloc(&ctx->d_dones, num_envs * sizeof(int)));
+    CUDA_CHECK(cudaMalloc(&ctx->d_seeds, num_envs * sizeof(unsigned int)));
 
     // 2. Allocate Pinned Memory (Page-locked RAM) on the CPU.
-    // This allows Python to write directly to RAM that the GPU can pull over PCI-e via DMA 
-    // without the CPU needing to buffer it. Highly performant.
     CUDA_CHECK(cudaMallocHost(&ctx->h_actions, num_envs * 4 * sizeof(float)));
     CUDA_CHECK(cudaMallocHost(&ctx->h_states, num_envs * 21 * sizeof(float)));
     CUDA_CHECK(cudaMallocHost(&ctx->h_rewards, num_envs * sizeof(float)));
     CUDA_CHECK(cudaMallocHost(&ctx->h_dones, num_envs * sizeof(int)));
+    CUDA_CHECK(cudaMallocHost(&ctx->h_seeds, num_envs * sizeof(unsigned int)));
 
     return ctx;
 }
@@ -64,11 +66,13 @@ void bibo_batched_env_destroy(BatchedSimulatorContext* ctx) {
     cudaFree(ctx->d_states);
     cudaFree(ctx->d_rewards);
     cudaFree(ctx->d_dones);
+    cudaFree(ctx->d_seeds);
 
     cudaFreeHost(ctx->h_actions);
     cudaFreeHost(ctx->h_states);
     cudaFreeHost(ctx->h_rewards);
     cudaFreeHost(ctx->h_dones);
+    cudaFreeHost(ctx->h_seeds);
 
     free(ctx);
 }
@@ -77,10 +81,16 @@ float* bibo_batched_get_actions_ptr(BatchedSimulatorContext* ctx) { return ctx->
 float* bibo_batched_get_states_ptr(BatchedSimulatorContext* ctx) { return ctx->h_states; }
 float* bibo_batched_get_rewards_ptr(BatchedSimulatorContext* ctx) { return ctx->h_rewards; }
 int*   bibo_batched_get_dones_ptr(BatchedSimulatorContext* ctx) { return ctx->h_dones; }
+unsigned int* bibo_batched_get_seeds_ptr(BatchedSimulatorContext* ctx) { return ctx->h_seeds; }
 
 void bibo_batched_sync_actions_to_device(BatchedSimulatorContext* ctx) {
     if (!ctx) return;
     CUDA_CHECK(cudaMemcpy(ctx->d_actions, ctx->h_actions, ctx->num_envs * 4 * sizeof(float), cudaMemcpyHostToDevice));
+}
+
+void bibo_batched_sync_seeds_to_device(BatchedSimulatorContext* ctx) {
+    if (!ctx) return;
+    CUDA_CHECK(cudaMemcpy(ctx->d_seeds, ctx->h_seeds, ctx->num_envs * sizeof(unsigned int), cudaMemcpyHostToDevice));
 }
 
 void bibo_batched_sync_results_to_host(BatchedSimulatorContext* ctx) {
@@ -94,12 +104,21 @@ void bibo_batched_sync_results_to_host(BatchedSimulatorContext* ctx) {
 // CUDA DEVICE KERNELS
 // -----------------------------------------------------------------------------
 
+__device__ float rand_uniform(unsigned int* seed, float min_val, float max_val) {
+    *seed = (*seed * 1664525u + 1013904223u);
+    float t = (float)(*seed & 0x00FFFFFF) / (float)0x01000000;
+    return min_val + t * (max_val - min_val);
+}
+
 __global__ void batched_env_reset_kernel(
     int num_envs,
     BiboSimulator* d_sims,
     float* d_states,
     float* d_rewards,
-    int* d_dones
+    int* d_dones,
+    unsigned int* d_seeds,
+    float spawn_radius_x,
+    float spawn_radius_y
 ) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx >= num_envs) return;
@@ -107,13 +126,17 @@ __global__ void batched_env_reset_kernel(
     // Initialize/Reset physical simulator
     simulator_init(&d_sims[idx]);
     
+    // Generate random spawn within bounds
+    unsigned int seed = d_seeds[idx];
+    float rx = rand_uniform(&seed, -spawn_radius_x, spawn_radius_x);
+    float ry = rand_uniform(&seed, -spawn_radius_y, spawn_radius_y);
+    d_seeds[idx] = seed;
+
     // Spawn roughly at center for now, with slight Z drop
-    Vec3 spawn = {0.0f, 0.0f, 0.15f};
+    Vec3 spawn = {rx, ry, 0.15f};
     simulator_reset(&d_sims[idx], spawn);
 
     // Populate initial state
-    // We can't use bibo_env_get_state easily because we want to write directly to batched d_states
-    // Wait, bibo_env_get_state(&d_sims[idx], &d_states[idx * 21]) works perfectly!
     bibo_env_get_state(&d_sims[idx], &d_states[idx * 21]);
     
     d_rewards[idx] = 0.0f;
@@ -127,15 +150,23 @@ __global__ void batched_env_step_kernel(
     float* d_states,
     float* d_rewards,
     int* d_dones,
-    float dt
+    unsigned int* d_seeds,
+    float dt,
+    float spawn_radius_x,
+    float spawn_radius_y
 ) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx >= num_envs) return;
 
     // Check if already done (auto-reset logic could go here)
     if (d_dones[idx]) {
-        // Simple auto-reset
-        Vec3 spawn = {0.0f, 0.0f, 0.15f};
+        // Generate random spawn within bounds
+        unsigned int seed = d_seeds[idx];
+        float rx = rand_uniform(&seed, -spawn_radius_x, spawn_radius_x);
+        float ry = rand_uniform(&seed, -spawn_radius_y, spawn_radius_y);
+        d_seeds[idx] = seed;
+
+        Vec3 spawn = {rx, ry, 0.15f};
         simulator_reset(&d_sims[idx], spawn);
         d_dones[idx] = 0;
     } else {
@@ -168,7 +199,7 @@ __global__ void batched_env_step_kernel(
     }
 }
 
-extern "C" void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx) {
+extern "C" void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y) {
     if (!ctx) return;
     
     int threads = 256;
@@ -179,12 +210,15 @@ extern "C" void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx) {
         ctx->d_sims,
         ctx->d_states,
         ctx->d_rewards,
-        ctx->d_dones
+        ctx->d_dones,
+        ctx->d_seeds,
+        spawn_radius_x,
+        spawn_radius_y
     );
     CUDA_CHECK(cudaDeviceSynchronize());
 }
 
-extern "C" void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt) {
+extern "C" void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y) {
     if (!ctx) return;
 
     int threads = 256;
@@ -197,7 +231,10 @@ extern "C" void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float d
         ctx->d_states,
         ctx->d_rewards,
         ctx->d_dones,
-        dt
+        ctx->d_seeds,
+        dt,
+        spawn_radius_x,
+        spawn_radius_y
     );
     CUDA_CHECK(cudaDeviceSynchronize());
 }

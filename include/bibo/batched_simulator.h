@@ -22,13 +22,16 @@ float* bibo_batched_get_states_ptr(BatchedSimulatorContext* ctx);
 float* bibo_batched_get_rewards_ptr(BatchedSimulatorContext* ctx);
 int*   bibo_batched_get_dones_ptr(BatchedSimulatorContext* ctx);
 
+unsigned int* bibo_batched_get_seeds_ptr(BatchedSimulatorContext* ctx);
+
 // High-bandwidth PCI-e transfers between CPU Pinned RAM and GPU VRAM
 void bibo_batched_sync_actions_to_device(BatchedSimulatorContext* ctx);
+void bibo_batched_sync_seeds_to_device(BatchedSimulatorContext* ctx);
 void bibo_batched_sync_results_to_host(BatchedSimulatorContext* ctx);
 
 // GPU Execution Kernels
-void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx);
-void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt);
+void bibo_batched_env_reset_cuda(BatchedSimulatorContext* ctx, float spawn_radius_x, float spawn_radius_y);
+void bibo_batched_env_step_cuda(BatchedSimulatorContext* ctx, float dt, float spawn_radius_x, float spawn_radius_y);
 
 #ifdef __cplusplus
 }
