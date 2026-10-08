@@ -51,10 +51,10 @@ BIBO Balance is a simulation-first, physics-based reinforcement learning project
 - [x] Write the PPO optimization step and training loops.
 - [x] Train continuous action agent and save weights.
 
-## 🟡 Phase 7: Robust RL (In Progress)
-- [ ] Introduce randomized initial drops.
-- [ ] Introduce randomized gravity vectors and friction.
-- [ ] Train over disturbance curriculum.
+## 🟢 Phase 7: Robust RL (Completed)
+- [x] Introduce randomized initial drops.
+- [x] Introduce randomized gravity vectors and friction.
+- [x] Train over disturbance curriculum.
 
 ## ⚪ Phase 8: Vision Policy
 - [ ] Swap privileged state for multi-camera CNN encodings.
