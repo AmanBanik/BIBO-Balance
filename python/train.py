@@ -15,7 +15,7 @@ np.random.seed(42)
 def train():
     num_envs = 100000
     rollout_steps = 100
-    epochs = 50
+    epochs = 100
     batch_size = 8192
     
     print(f"Initializing GPU Simulator with {num_envs} environments...")
@@ -41,12 +41,12 @@ def train():
         # ==========================================
         # Curriculum Domain Randomization
         # ==========================================
-        if epoch < 10:
+        if epoch < 20:
             spawn_radius_x = 0.05
             spawn_radius_y = 0.02
             gravity_tilt = 0.0
             friction_range = 0.0
-        elif epoch < 30:
+        elif epoch < 60:
             spawn_radius_x = 0.15
             spawn_radius_y = 0.05
             gravity_tilt = 0.5 # +/- 0.5 m/s^2 lateral gravity
