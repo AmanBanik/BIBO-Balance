@@ -1,0 +1,39 @@
+name: GPU CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    # This tells GitHub to wait for your Colab T4 runner!
+    runs-on: self-hosted
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Ensure Conda / Dependencies
+      run: |
+        # In Colab, we might not use Conda, so we can install pip deps directly
+        pip install tensorflow cffi numpy
+
+    - name: Build CUDA Simulator
+      run: |
+        mkdir -p build
+        cd build
+        cmake ..
+        make -j
+
+    - name: Run C/CUDA Unit Tests
+      run: |
+        cd build
+        ./test_batched_memory
+        # Add other tests here like ./test_simulator, ./test_physics, etc.
+        ./test_physics
+
+    - name: Verify Python Environment Load
+      run: |
+        python -c "from python.bibo_batched_env import BiboBatchedEnv; env = BiboBatchedEnv(num_envs=10); print('Python Environment Loaded Successfully!')"
